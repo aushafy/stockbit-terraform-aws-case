@@ -28,8 +28,8 @@ resource "aws_subnet" "public_subnet" {
 
 resource "aws_nat_gateway" "nat_gw" {
   allocation_id = aws_eip.eip_natgw.id
-  subnet_id     = aws_subnet.private_subnet.id
-
+  subnet_id     = aws_subnet.public_subnet.id
+  depends_on = [aws_internet_gateway.igw]
   tags = {
     Name = "nat_gw"
   }
@@ -37,4 +37,16 @@ resource "aws_nat_gateway" "nat_gw" {
 
 resource "aws_eip" "eip_natgw" {
   vpc = true
+
+  tags = {
+    Name = "eip_natgw"
+  }
+}
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.devops_vpc.id
+
+  tags = {
+      Name = "igw"
+  }
 }
